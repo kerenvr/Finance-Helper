@@ -3,6 +3,7 @@ import mysql.connector
 import os
 from dotenv import load_dotenv
 import numpy as np
+from csv_prediction import category_prediction
 
 load_dotenv()
 
@@ -80,6 +81,7 @@ for transaction in transactions:
                     if answer == "Yes":
                         users[int(name)].append(-float(amount_owed))
                     if answer == 'No':
+                        users[0].append(-float(amount_owed))
                         users[int(name)].append(float(amount_owed))
 
                 except:
@@ -102,8 +104,12 @@ for transaction in transactions:
     elif buyer == 4:
         users[4].append(amount)
 
+# Predict categories for purchases
+category_prediction('./purchase tracker/may_june.csv', 4)
+print(description, category_prediction)
+
 for i in range(5):
     person_name = os.environ.get(f'PERSON_NAME{i}')
     total_owed = round(sum(users[i]), 2)
     if total_owed > 0:
-        print(f"{person_name}: {total_owed}")
+        print(f"{person_name}: ${total_owed}")
