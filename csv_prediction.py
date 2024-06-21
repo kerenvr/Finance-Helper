@@ -55,23 +55,25 @@ model.fit(X_train, y_train)
 # Will store all transactions from the csv file
 transactions = []
 
-with open('./transaction history/feb_transactions.csv', newline='\n') as csvfile:
-    # Read the csv file
-    spamreader = csv.reader(csvfile)
-    for row in spamreader:  # Each row contains transaction information for a purchase
-        temp = []  # Temporary list to store the row
-        for item in row:
-            temp.append(item)
-        transactions.append(temp)
 
-for transaction in transactions:
-    purchase_name = transaction[3]  # Name of purchase
-    prediction = model.predict_proba([purchase_name])
+def category_prediction(csv_file, column_index):
+    with open(csv_file, newline='\n') as csvfile:
+        # Read the csv file
+        spamreader = csv.reader(csvfile)
+        for row in spamreader:  # Each row contains transaction information for a purchase
+            temp = []  # Temporary list to store the row
+            for item in row:
+                temp.append(item)
+            transactions.append(temp)
 
-    threshold = 0.2
-    if np.max(prediction) >= threshold:
-        predicted_category = model.predict([purchase_name])[0]
-    else:
-        predicted_category = "Unknown"
+    for transaction in transactions:
+        purchase_name = transaction[column_index]  # Name of purchase
+        prediction = model.predict_proba([purchase_name])
 
-    print(f"Predicted category for {purchase_name}: {predicted_category}")
+        threshold = 0.2
+        if np.max(prediction) >= threshold:
+            predicted_category = model.predict([purchase_name])[0]
+        else:
+            predicted_category = "Unknown"
+
+        print(f"Predicted category for {purchase_name}: {predicted_category}")
